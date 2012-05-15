@@ -77,6 +77,8 @@ class Particle{
   
   void update(float _r){
     PVector q = new PVector(s.x*(_r/masterSize),s.y*(_r/masterSize));
+    p.x += random(1) - random(1);
+    p.y += random(1) - random(1);
     render(q.x,q.y);
   }
 
