@@ -1,6 +1,6 @@
 int sW = 640;
 int sH = 480;
-int fps = 60;
+int fps = 24;
 int masterSize = 256;
 
 int numColumns = 64;
@@ -12,6 +12,8 @@ boolean showImg = false;
 
 ParticleFrame[] mary;
 int marylength;
+int leadOut = 0;
+int leadOutMax = 2 * fps;  //frames to record after end
 
 void setup() {
   size(sW, sH, P2D);
@@ -30,6 +32,23 @@ void draw() {
   if (readFrameNum<readFrameNumMax) {
     String readString = readFilePath + "/" + readFileName + readFrameNum + "." + readFileType;
     mapImg = loadImage(readString);
+
+    mainRender();
+
+    readFrameNum++;
+  } else if(readFrameNum>=readFrameNumMax&&leadOut<leadOutMax){
+    
+    mainRender();
+  
+    leadOut++;
+    
+  } else {
+    exit();
+  }
+ println("saved frame " + (readFrameNum+leadOut-1) + " of " + (readFrameNumMax+leadOutMax-1) + ".");
+}
+
+void mainRender(){
     //~~~~~~~~~~~~~~~~
     image(mapImg, 0, 0, numColumns, numRows);
 
@@ -50,13 +69,8 @@ void draw() {
     else {
       image(mapImg, 0, 0, sW, sH);
     }
+    
+        writeFile(1);
     //~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    writeFile(1);
-    readFrameNum++;
-  }
-  else {
-    exit();
-  }
 }
 
