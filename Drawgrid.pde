@@ -1,76 +1,151 @@
+//particles persist after they are generated
+//instead of being cleared each frame
+boolean persistence = true;
+boolean renderFrames = true;
+boolean renderKeys = false;
+
 int sW = 640;
-int sH = 480;
+int sH = 360;
+int dW = 1920;
+int dH = 1080;
+
 int fps = 24;
 int masterSize = 256;
 
-int numColumns = 64;
-int numRows = 48;
+int numColumns = 32;
+int numRows = 18;
+//**************
+int numParticles = numColumns * numRows;
+boolean motionBlur = true;
+boolean applyEffects = false;
+boolean applySmoothing = true;
+int smoothNum = 6;
+//**************
 
 PImage mapImg;
 PImage scaleImg;
 boolean showImg = false;
 
-ParticleFrame[] mary;
-int marylength;
-int leadOut = 0;
-int leadOutMax = 2 * fps;  //frames to record after end
+ParticleFrame[] particleFrame;
+int particleFramelength;
+int leadOutCounter = 0;
+int leadOutCounterMax = 2 * fps;  //frames to record after end
+
+String readFilePath = "frames";
+String readFileName = "cellosback_";
+String readFileType = "png"; // record with tga for speed
+String writeFilePath = "render";
+String writeFileName = "frame_";
+String writeFileType = "png";  // render with png to save space
+String scriptsFilePath = "scripts";
+int counterOrig = 1;
+int counter = counterOrig;
+int counterMax;
+int writeFrameNum = counter;
+File dataFolder;
+String[] numFiles; 
+Data dataAE, dataMaya;
+
+void writeAllKeys() {
+  if (persistence) {
+    println("~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~");
+    println("Sorry, writing keyframes currently doesn't work with \"persistence\" enabled.");
+    println("You can still render video frames to disk, though.");
+    exit();
+  }
+  else {
+    AEkeysMain();  // After Effects, JavaScript
+    mayaKeysMain();  // Maya, Python
+  }
+}
 
 void setup() {
   size(sW, sH, P2D);
   frameRate(fps);
   countFolder();
-  marylength = numFiles.length;
+  if (persistence) {
+    particleFramelength = numFiles.length;
+  }
+  else {
+    particleFramelength = 1;
+  }
   //mapImg = loadImage("test.png");
   scaleImg = createImage(numColumns, numRows, RGB);
-  mary = new ParticleFrame[marylength];
-  for (int i=0;i<marylength;i++) {
-    mary[i] = new ParticleFrame();
+  particleFrame = new ParticleFrame[particleFramelength];
+  for (int i=0;i<particleFramelength;i++) {
+    particleFrame[i] = new ParticleFrame();
   }
 }
 
 void draw() {
-  if (readFrameNum<readFrameNumMax) {
-    String readString = readFilePath + "/" + readFileName + readFrameNum + "." + readFileType;
+  if (counter<counterMax) {
+    String readString = readFilePath + "/" + readFileName + counter + "." + readFileType;
     mapImg = loadImage(readString);
 
     mainRender();
 
-    readFrameNum++;
-  } else if(readFrameNum>=readFrameNumMax&&leadOut<leadOutMax){
-    
+    counter++;
+
+    console();
+  } 
+  else if (persistence && counter>=counterMax && leadOutCounter<leadOutCounterMax) {
+
     mainRender();
-  
-    leadOut++;
-    
-  } else {
+
+    leadOutCounter++;
+
+    console();
+  } 
+  else {
+    if (renderKeys) {
+      writeAllKeys();
+    }
     exit();
   }
- println("saved frame " + (readFrameNum+leadOut-1) + " of " + (readFrameNumMax+leadOutMax-1) + ".");
 }
 
-void mainRender(){
-    //~~~~~~~~~~~~~~~~
-    image(mapImg, 0, 0, numColumns, numRows);
+void mainRender() {
+  //~~~~~~~~~~~~~~~~
+  image(mapImg, 0, 0, numColumns, numRows);
 
-    scaleImg = get(0, 0, numColumns, numRows);
-    background(128);
+  scaleImg = get(0, 0, numColumns, numRows);
+  background(128);
 
-    //main
-    if (!showImg) {
-      for (int i=0;i<readFrameNum;i++) {
-        if(i==readFrameNum-1){
-        mary[i].pixelTrack();
+  //main
+  if (!showImg) {
+    //~~~~~~~~~~~~~~~
+    if (persistence) {
+      for (int i=0;i<counter;i++) {
+        if (i==counter-1) {
+          particleFrame[i].pixelTrack();
         }
-        if(!mary[i].firstRun){
-          mary[i].update();
+        if (!particleFrame[i].firstRun) {
+          particleFrame[i].update();
         }
       }
     }
     else {
-      image(mapImg, 0, 0, sW, sH);
+      particleFrame[0].pixelTrack();
+      particleFrame[0].update();
     }
-    
-        writeFile(1);
-    //~~~~~~~~~~~~~~~~~~~~~~~~~
+    //~~~~~~~~~~~~~~~~
+  }
+  else {
+    image(mapImg, 0, 0, sW, sH);
+  }
+
+  if (renderFrames) {
+    writeFile(1);
+  }
+  //~~~~~~~~~~~~~~~~~~~~~~~~~
+}
+
+void console() {
+  if (persistence) {
+    println("saved frame " + (counter+leadOutCounter-1) + " of " + (counterMax+leadOutCounterMax-1) + ".");
+  }
+  else {
+    println("saved frame " + (counter-1) + " of " + (counterMax-1) + ".");
+  }
 }
 

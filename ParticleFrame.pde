@@ -1,7 +1,7 @@
 class ParticleFrame {
   boolean firstRun = true;
 
-  Particle[][] bob = new Particle[numColumns][numRows];
+  Particle[][] particle = new Particle[numColumns][numRows];
 
   PVector particleSize = new PVector(sW/numColumns, sH/numRows);
   PVector particleStart = new PVector(particleSize.x/2, particleSize.y/2);
@@ -17,13 +17,13 @@ class ParticleFrame {
   void update() {
     for (int y = 0; y<numRows; y++) {
       for (int x=0; x<numColumns; x++) {
-        bob[x][y].update();
+        particle[x][y].run();
       }
     }
   }
 
   void particlesInit(int x, int y) {
-    bob[x][y] = new Particle(particleStart.x, particleStart.y, particleSize.x, particleSize.y);
+    particle[x][y] = new Particle(particleStart.x, particleStart.y, particleSize.x, particleSize.y);
     if (particleStart.x<sW-particleSize.x) {
       particleStart.x += particleSize.x;
     } 
@@ -45,10 +45,12 @@ class ParticleFrame {
           float b = blue(scaleImg.pixels[loc]);
           int target = int((r+g+b)/3);
 
-          bob[x][y].init(target);
+          particle[x][y].init(target);
         }
       }
-      firstRun=false;
+      if(persistence){
+        firstRun=false;
+      }
     }
   }
   

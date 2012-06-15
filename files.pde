@@ -1,20 +1,7 @@
-String readFilePath = "data";
-String readFileName = "cellosback_";
-String readFileType = "png"; // record with tga for speed
-String writeFilePath = "render";
-String writeFileName = "frame_";
-String writeFileType = "png";  // render with png to save space
-int readFrameNumOrig = 1;
-int readFrameNum = readFrameNumOrig;
-int readFrameNumMax;
-int writeFrameNum = readFrameNum;
-File dataFolder;
-String[] numFiles; 
-
 void countFolder() {
   dataFolder = new File(sketchPath, readFilePath);
   numFiles = dataFolder.list();
-  readFrameNumMax = numFiles.length;
+  counterMax = numFiles.length;
 }
 
 void writeFile(int reps) {
