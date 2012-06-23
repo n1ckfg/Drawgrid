@@ -1,8 +1,8 @@
 //particles persist after they are generated
 //instead of being cleared each frame
-boolean persistence = true;
-boolean renderFrames = true;
-boolean renderKeys = false;
+boolean persistence = false;
+boolean renderFrames = false;
+boolean renderKeys = true;
 
 int sW = 640;
 int sH = 360;
@@ -19,7 +19,10 @@ int numParticles = numColumns * numRows;
 boolean motionBlur = true;
 boolean applyEffects = false;
 boolean applySmoothing = true;
+//smoothing
 int smoothNum = 6;
+float weight = 18;
+float scaleNum  = 1.0 / (weight + 2);
 //**************
 
 PImage mapImg;
@@ -32,8 +35,8 @@ int leadOutCounter = 0;
 int leadOutCounterMax = 2 * fps;  //frames to record after end
 
 String readFilePath = "frames";
-String readFileName = "cellosback_";
-String readFileType = "png"; // record with tga for speed
+String readFileName = "shot2_frame";
+String readFileType = "tga"; // record with tga for speed
 String writeFilePath = "render";
 String writeFileName = "frame_";
 String writeFileType = "png";  // render with png to save space

@@ -16,11 +16,13 @@ void AEkeysMain() {
       dataAE.add("\r");
       dataAE.add("\t" + "var p = solid.property(\"position\");" + "\r");
       dataAE.add("\t" + "var r = solid.property(\"rotation\");" + "\r");
+      dataAE.add("\t" + "var s = solid.property(\"scale\");" + "\r");
       dataAE.add("\r");
 
       for (int j=0;j<counterMax-1;j++) {
         AEkeyPos(x, y, j);
         //AEkeyRot(i,j);
+        AEkeyScale(x,y,j);
       }
     }
   }
@@ -35,8 +37,6 @@ void AEkeyPos(int spriteNumX, int spriteNumY, int frameNum) {
 
   // smoothing algorithm by Golan Levin
 
-  float weight = 18;
-  float scaleNum  = 1.0 / (weight + 2);
   PVector lower, upper, centerNum;
 
   centerNum = particleFrame[0].particle[spriteNumX][spriteNumY].AEpath[frameNum+1];
@@ -53,29 +53,49 @@ void AEkeyPos(int spriteNumX, int spriteNumY, int frameNum) {
   }
 }
 
+void AEkeyScale(int spriteNumX, int spriteNumY, int frameNum) {
 
-void AEkeyRot(int spriteNum, int frameNum) {
-  /*
-float weight = 18;
-   float scaleNum  = 1.0 / (weight + 2);
-   float lower, upper, centerNum;
-   
-   centerNum = particleFrame[0].particle[x][y].AEpath.AErot[frameNum];
-   
-   if(applySmoothing && frameNum>smoothNum && frameNum<counterMax-smoothNum){
-   lower = particleFrame[0].particle[x][y].AEpath.AErot[frameNum-smoothNum];
-   upper = particleFrame[0].particle[x][y].AEpath.AErot[frameNum+smoothNum];
-   centerNum = (lower + weight*centerNum + upper)*scaleNum;
-   }
-   
-   if(frameNum%smoothNum==0||frameNum==0||frameNum==counterMax-1){
-   dataAE.add("\t\t" + "r.setValueAtTime(" + AEkeyTime(frameNum) + ", " + centerNum +");" + "\r");
-   }
-   */
+  PVector lower, upper, centerNum;
+
+  centerNum = particleFrame[0].particle[spriteNumX][spriteNumY].AEscale[frameNum+1];
+
+  if (applySmoothing && frameNum>smoothNum && frameNum<counterMax-smoothNum) {
+    lower = new PVector(particleFrame[0].particle[spriteNumX][spriteNumY].AEscale[frameNum-smoothNum].x, particleFrame[0].particle[spriteNumX][spriteNumY].AEscale[frameNum-smoothNum].y);
+    upper = new PVector(particleFrame[0].particle[spriteNumX][spriteNumY].AEscale[frameNum+smoothNum].x, particleFrame[0].particle[spriteNumX][spriteNumY].AEscale[frameNum+smoothNum].y);
+    centerNum.x = (lower.x + weight*centerNum.x + upper.x)*scaleNum;
+    centerNum.y = (lower.y + weight*centerNum.y + upper.y)*scaleNum;
+  }
+
+  if (frameNum%smoothNum==0||frameNum==0||frameNum==counterMax-1) {
+    println(centerNum);
+    dataAE.add("\t\t" + "s.setValueAtTime(" + AEkeyTime(frameNum) + ", [ " + (centerNum.x*10) + ", " + (centerNum.y*10) + "]);" + "\r");
+  }
+
+}
+
+void AEkeyRot(int spriteNumX, int spriteNumY, int frameNum) {
+//FIX, turn PVector to float
+/*
+  PVector lower, upper, centerNum;
+
+  centerNum = particleFrame[0].particle[spriteNumX][spriteNumY].AErot[frameNum+1];
+
+  if (applySmoothing && frameNum>smoothNum && frameNum<counterMax-smoothNum) {
+    lower = new PVector(particleFrame[0].particle[spriteNumX][spriteNumY].AErot[frameNum-smoothNum].x, particleFrame[0].particle[spriteNumX][spriteNumY].AErot[frameNum-smoothNum].y);
+    upper = new PVector(particleFrame[0].particle[spriteNumX][spriteNumY].AErot[frameNum+smoothNum].x, particleFrame[0].particle[spriteNumX][spriteNumY].AErot[frameNum+smoothNum].y);
+    centerNum.x = (lower.x + weight*centerNum.x + upper.x)*scaleNum;
+    centerNum.y = (lower.y + weight*centerNum.y + upper.y)*scaleNum;
+  }
+
+  if (frameNum%smoothNum==0||frameNum==0||frameNum==counterMax-1) {
+    dataAE.add("\t\t" + "r.setValueAtTime(" + AEkeyTime(frameNum) + ", [ " + centerNum.x + ", " + centerNum.y + "]);" + "\r");
+  }
+  */
 }
 
 void AEeffects() {
   dataAE.add("\t" + "var myEffect = solid.property(\"Effects\").addProperty(\"Fast Blur\")(\"Blurriness\").setValue(61);");
+  //dataAE.add("\t" + "var myEffect = solid.property(\"Effects\").addProperty(\"Slider Control\")(\"Slider\").setValue(61);");
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

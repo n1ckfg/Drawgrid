@@ -1,6 +1,8 @@
 class Particle {
   PVector[] AEpath = new PVector[counterMax];
-
+  float[] AErot = new float[counterMax];
+  PVector[] AEscale = new PVector[counterMax];
+  
   PVector p, s, q;
   float spread = 10;
   int alphaNumOrig = 100;
@@ -21,6 +23,8 @@ class Particle {
     render(q.x, q.y);
     if (counter<counterMax) {
       AEpath[counter] = new PVector((p.x/sW)*dW, (p.y/sH)*dH);
+      AEscale[counter] = new PVector(q.x, q.y);
+      println(q.x + " " + q.y);
       //println(AEpath[counter]);
     }
   }

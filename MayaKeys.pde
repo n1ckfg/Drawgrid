@@ -9,6 +9,7 @@ void mayaKeysMain() {
       dataMaya.add("polyCube()" + "\r");
       for (int j=0;j<counterMax-1;j++) {
         mayaKeyPos(x,y, j);
+        mayaKeyScale(x,y, j);
       }
     }
   }
@@ -19,8 +20,6 @@ void mayaKeyPos(int spriteNumX, int spriteNumY, int frameNum) {
 
   // smoothing algorithm by Golan Levin
 
-  float weight = 18;
-  float scaleNum  = 1.0 / (weight + 2);
   PVector lower, upper, centerNum;
 
   centerNum = particleFrame[0].particle[spriteNumX][spriteNumY].AEpath[frameNum+1];
@@ -39,10 +38,28 @@ void mayaKeyPos(int spriteNumX, int spriteNumY, int frameNum) {
   }
 }
 
+void mayaKeyScale(int spriteNumX, int spriteNumY, int frameNum) {
+
+  PVector lower, upper, centerNum;
+
+  centerNum = particleFrame[0].particle[spriteNumX][spriteNumY].AEscale[frameNum+1];
+
+  if (applySmoothing && frameNum>smoothNum && frameNum<counterMax-smoothNum) {
+    lower = new PVector(particleFrame[0].particle[spriteNumX][spriteNumY].AEscale[frameNum-smoothNum].x, particleFrame[0].particle[spriteNumX][spriteNumY].AEscale[frameNum-smoothNum].y);
+    upper = new PVector(particleFrame[0].particle[spriteNumX][spriteNumY].AEscale[frameNum+smoothNum].x, particleFrame[0].particle[spriteNumX][spriteNumY].AEscale[frameNum+smoothNum].y);
+    centerNum.x = (lower.x + weight*centerNum.x + upper.x)*scaleNum;
+    centerNum.y = (lower.y + weight*centerNum.y + upper.y)*scaleNum;
+  }
+
+  if (frameNum%smoothNum==0||frameNum==0||frameNum==counterMax-1) {
+    dataMaya.add("currentTime("+frameNum+")"+"\r");
+    dataMaya.add("scale(" + (centerNum.x) + ", " + (centerNum.y) + "," + 0 + ")" + "\r");
+    dataMaya.add("setKeyframe()" + "\r");
+  }
+}
+
 void mayaKeyRot(int spriteNum, int frameNum) {
   /*
-   float weight = 18;
-   float scaleNum  = 1.0 / (weight + 2);
    float lower, upper, centerNum;
    
    centerNum = particle[spriteNum].AErot[frameNum];
