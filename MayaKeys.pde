@@ -21,6 +21,7 @@ void mayaKeyPos(int spriteNumX, int spriteNumY, int frameNum) {
   // smoothing algorithm by Golan Levin
 
   PVector lower, upper, centerNum;
+  float finalScaler = 100;
 
   centerNum = particleFrame[0].particle[spriteNumX][spriteNumY].AEpath[frameNum+1];
 
@@ -29,11 +30,12 @@ void mayaKeyPos(int spriteNumX, int spriteNumY, int frameNum) {
     upper = new PVector(particleFrame[0].particle[spriteNumX][spriteNumY].AEpath[frameNum+smoothNum].x, particleFrame[0].particle[spriteNumX][spriteNumY].AEpath[frameNum+smoothNum].y);
     centerNum.x = (lower.x + weight*centerNum.x + upper.x)*scaleNum;
     centerNum.y = (lower.y + weight*centerNum.y + upper.y)*scaleNum;
+    centerNum.z = particleFrame[0].particle[spriteNumX][spriteNumY].AEscale[frameNum+1].x;
   }
 
   if (frameNum%smoothNum==0||frameNum==0||frameNum==counterMax-1) {
     dataMaya.add("currentTime("+frameNum+")"+"\r");
-    dataMaya.add("move(" + (centerNum.x/100) + ", " + (centerNum.y/100) + "," + 0 + ")" + "\r");
+    dataMaya.add("move(" + (centerNum.x/finalScaler) + ", " + (centerNum.y/finalScaler) + "," + (centerNum.z/finalScaler) + ")" + "\r");
     dataMaya.add("setKeyframe()" + "\r");
   }
 }
@@ -41,6 +43,7 @@ void mayaKeyPos(int spriteNumX, int spriteNumY, int frameNum) {
 void mayaKeyScale(int spriteNumX, int spriteNumY, int frameNum) {
 
   PVector lower, upper, centerNum;
+  float finalScaler = 10;
 
   centerNum = particleFrame[0].particle[spriteNumX][spriteNumY].AEscale[frameNum+1];
 
@@ -49,11 +52,12 @@ void mayaKeyScale(int spriteNumX, int spriteNumY, int frameNum) {
     upper = new PVector(particleFrame[0].particle[spriteNumX][spriteNumY].AEscale[frameNum+smoothNum].x, particleFrame[0].particle[spriteNumX][spriteNumY].AEscale[frameNum+smoothNum].y);
     centerNum.x = (lower.x + weight*centerNum.x + upper.x)*scaleNum;
     centerNum.y = (lower.y + weight*centerNum.y + upper.y)*scaleNum;
+    centerNum.z = centerNum.y;
   }
 
   if (frameNum%smoothNum==0||frameNum==0||frameNum==counterMax-1) {
     dataMaya.add("currentTime("+frameNum+")"+"\r");
-    dataMaya.add("scale(" + (centerNum.x) + ", " + (centerNum.y) + "," + 0 + ")" + "\r");
+    dataMaya.add("scale(" + (centerNum.x/finalScaler) + ", " + (centerNum.y/finalScaler) + "," + (centerNum.z/finalScaler) + ")" + "\r");
     dataMaya.add("setKeyframe()" + "\r");
   }
 }

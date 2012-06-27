@@ -1,7 +1,7 @@
 //particles persist after they are generated
 //instead of being cleared each frame
-boolean persistence = false;
-boolean renderFrames = false;
+boolean persistence = true;
+boolean renderFrames = true;
 boolean renderKeys = true;
 
 int sW = 640;
@@ -35,10 +35,10 @@ int leadOutCounter = 0;
 int leadOutCounterMax = 2 * fps;  //frames to record after end
 
 String readFilePath = "frames";
-String readFileName = "shot2_frame";
-String readFileType = "tga"; // record with tga for speed
+String readFileName = "frame_";
+String readFileType = "png"; // record with tga for speed
 String writeFilePath = "render";
-String writeFileName = "frame_";
+String writeFileName = "render_";
 String writeFileType = "png";  // render with png to save space
 String scriptsFilePath = "scripts";
 int counterOrig = 1;
