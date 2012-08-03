@@ -1,7 +1,7 @@
 //particles persist after they are generated
 //instead of being cleared each frame
-boolean persistence = true;
-boolean renderFrames = true;
+boolean persistence = false;
+boolean renderFrames = false;
 boolean renderKeys = true;
 
 int sW = 640;
@@ -20,7 +20,7 @@ boolean motionBlur = true;
 boolean applyEffects = false;
 boolean applySmoothing = true;
 //smoothing
-int smoothNum = 6;
+int smoothNum = 1; //6
 float weight = 18;
 float scaleNum  = 1.0 / (weight + 2);
 //**************
@@ -35,10 +35,10 @@ int leadOutCounter = 0;
 int leadOutCounterMax = 2 * fps;  //frames to record after end
 
 String readFilePath = "frames";
-String readFileName = "frame_";
+String readFileName = "draw";
 String readFileType = "png"; // record with tga for speed
 String writeFilePath = "render";
-String writeFileName = "render_";
+String writeFileName = "frame_";
 String writeFileType = "png";  // render with png to save space
 String scriptsFilePath = "scripts";
 int counterOrig = 1;
