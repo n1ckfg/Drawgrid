@@ -48,6 +48,8 @@ int writeFrameNum = counter;
 File dataFolder;
 String[] numFiles; 
 Data dataAE, dataMaya;
+boolean writeAE = true;
+boolean writeMaya = true;
 
 void writeAllKeys() {
   if (persistence) {
@@ -57,12 +59,18 @@ void writeAllKeys() {
     exit();
   }
   else {
-    AEkeysMain();  // After Effects, JavaScript
-    mayaKeysMain();  // Maya, Python
+    if(writeAE) AEkeysMain();  // After Effects, JavaScript
+    if(writeMaya) mayaKeysMain();  // Maya, Python
   }
 }
 
+void initSettings(){
+  Settings settings = new Settings("settings.txt");
+  numParticles = numColumns * numRows;
+}
+
 void setup() {
+  initSettings();
   size(sW, sH, P2D);
   frameRate(fps);
   countFolder();
