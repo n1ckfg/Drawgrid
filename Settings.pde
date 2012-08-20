@@ -43,7 +43,7 @@ class Settings {
   }
 
   String setString(String _s) {
-    return String(_s);
+    return ""+(_s);
   }
   
   color setColor(String _s) {
